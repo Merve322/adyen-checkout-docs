@@ -27,3 +27,75 @@ tags:
     description: Retrieve available payment methods
   - name: Modifications
     description: Capture, cancel, or refund payments
+
+    paths:
+    /sessions:
+    post:
+      tags:
+        - Sessions
+      summary: Create a payment session
+      description: >
+        Creates a payment session that initializes the Drop-in component.
+        The session contains all the information needed to render the 
+        payment form and process the transaction.
+      operationId: createSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - merchantAccount
+                - amount
+                - currency
+                - returnUrl
+              properties:
+                merchantAccount:
+                  type: string
+                  description: Your Adyen merchant account name.
+                  example: YourMerchantAccount
+                amount:
+                  type: integer
+                  description: >
+                    Payment amount in minor units. For example, 
+                    1000 represents $10.00 in USD.
+                  example: 1000
+                currency:
+                  type: string
+                  description: The three-letter ISO 4217 currency code.
+                  example: USD
+                returnUrl:
+                  type: string
+                  description: >
+                    The URL to redirect the shopper to after payment 
+                    is completed.
+                  example: https://yoursite.com/checkout/complete
+      responses:
+        "201":
+          description: Session created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The unique session identifier.
+                    example: CS-Adyen-1234567890
+                  sessionData:
+                    type: string
+                    description: >
+                      Encrypted session data passed to the 
+                      Drop-in component.
+                    example: Ab02b4c...
+                  expiresAt:
+                    type: string
+                    description: Session expiry time in ISO 8601 format.
+                    example: "2024-01-15T12:00:00Z"
+        "400":
+          description: Bad request. Missing or invalid parameters.
+        "401":
+          description: Unauthorized. Invalid or missing API key.
+        "422":
+          description: Unprocessable entity. Invalid merchant account.
