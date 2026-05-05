@@ -1,0 +1,29 @@
+openapi: 3.0.3
+
+info:
+  title: Adyen Checkout API
+  version: "72.0"
+  description: >
+    The Adyen Checkout API provides a modern and flexible way to accept
+    payments online. This documentation covers the Drop-in integration
+    for web, including authentication, payment sessions, and error handling.
+  contact:
+    name: Adyen Developer Support
+    url: https://docs.adyen.com
+    email: support@adyen.com
+
+servers:
+  - url: https://checkout-test.adyen.com/v72
+    description: Test environment
+  - url: https://checkout-live.adyen.com/v72
+    description: Live environment
+
+tags:
+  - name: Sessions
+    description: Create and manage payment sessions
+  - name: Payments
+    description: Submit and manage payments
+  - name: Payment Methods
+    description: Retrieve available payment methods
+  - name: Modifications
+    description: Capture, cancel, or refund payments
