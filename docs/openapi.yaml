@@ -175,3 +175,121 @@ tags:
           description: Bad request. Missing or invalid parameters.
         "401":
           description: Unauthorized. Invalid or missing API key.
+
+    /payments:
+     post:
+      tags:
+        - Payments
+      summary: Submit a payment
+      description: >
+        Submits a payment request after the shopper has provided their
+        payment details through the Drop-in component. This endpoint
+        processes the transaction and returns an immediate result or
+        redirects the shopper for additional authentication such as 3D Secure.
+      operationId: makePayment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - merchantAccount
+                - amount
+                - currency
+                - reference
+                - returnUrl
+                - paymentMethod
+              properties:
+                merchantAccount:
+                  type: string
+                  description: Your Adyen merchant account name.
+                  example: YourMerchantAccount
+                amount:
+                  type: integer
+                  description: >
+                    Payment amount in minor units. For example,
+                    1000 represents $10.00 in USD.
+                  example: 1000
+                currency:
+                  type: string
+                  description: The three-letter ISO 4217 currency code.
+                  example: USD
+                reference:
+                  type: string
+                  description: >
+                    Your unique reference for this payment. Use this
+                    to match the payment to your internal order system.
+                  example: ORDER-12345
+                returnUrl:
+                  type: string
+                  description: >
+                    The URL to redirect the shopper to after payment
+                    is completed or after 3D Secure authentication.
+                  example: https://yoursite.com/checkout/complete
+                paymentMethod:
+                  type: object
+                  description: >
+                    The payment method details collected from the
+                    shopper through the Drop-in component.
+                  properties:
+                    type:
+                      type: string
+                      description: The payment method type.
+                      example: scheme
+                    encryptedCardNumber:
+                      type: string
+                      description: The encrypted card number.
+                      example: adyenjs_0_1_25$...
+                    encryptedExpiryMonth:
+                      type: string
+                      description: The encrypted card expiry month.
+                      example: adyenjs_0_1_25$...
+                    encryptedExpiryYear:
+                      type: string
+                      description: The encrypted card expiry year.
+                      example: adyenjs_0_1_25$...
+                    encryptedSecurityCode:
+                      type: string
+                      description: The encrypted card security code (CVV).
+                      example: adyenjs_0_1_25$...
+                shopperEmail:
+                  type: string
+                  description: The shopper's email address.
+                  example: shopper@example.com
+                shopperIP:
+                  type: string
+                  description: >
+                    The shopper's IP address. Used for fraud detection.
+                  example: 192.168.1.1
+      responses:
+        "200":
+          description: Payment processed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pspReference:
+                    type: string
+                    description: >
+                      Adyen's unique reference for this payment.
+                      Store this for refunds and disputes.
+                    example: 882610755394031G
+                  resultCode:
+                    type: string
+                    description: >
+                      The result of the payment request. Possible values
+                      are Authorised, Refused, RedirectShopper, 
+                      Pending, and Error.
+                    example: Authorised
+                  merchantReference:
+                    type: string
+                    description: Your original order reference.
+                    example: ORDER-12345
+        "400":
+          description: Bad request. Missing or invalid parameters.
+        "401":
+          description: Unauthorized. Invalid or missing API key.
+        "422":
+          description: Unprocessable entity. Invalid merchant account.
