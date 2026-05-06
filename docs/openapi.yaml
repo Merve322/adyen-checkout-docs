@@ -293,3 +293,85 @@ tags:
           description: Unauthorized. Invalid or missing API key.
         "422":
           description: Unprocessable entity. Invalid merchant account.
+    
+    /payments/{paymentPspReference}/captures:
+     post:
+      tags:
+        - Modifications
+      summary: Capture a payment
+      description: >
+        Captures an authorised payment. Use this endpoint when you have
+        separated the authorisation and capture steps in your payment
+        flow. This is common in retail and hospitality businesses where
+        the final amount may differ from the authorised amount.
+      operationId: capturePayment
+      parameters:
+        - name: paymentPspReference
+          in: path
+          required: true
+          description: >
+            The PSP reference of the payment you want to capture.
+            This is returned in the response of the /payments endpoint.
+          schema:
+            type: string
+          example: 882610755394031G
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - merchantAccount
+                - amount
+                - currency
+              properties:
+                merchantAccount:
+                  type: string
+                  description: Your Adyen merchant account name.
+                  example: YourMerchantAccount
+                amount:
+                  type: integer
+                  description: >
+                    The amount to capture in minor units. This can be
+                    less than or equal to the authorised amount.
+                  example: 1000
+                currency:
+                  type: string
+                  description: The three-letter ISO 4217 currency code.
+                  example: USD
+                reference:
+                  type: string
+                  description: >
+                    Your unique reference for this capture request.
+                  example: CAPTURE-ORDER-12345
+      responses:
+        "200":
+          description: Payment captured successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pspReference:
+                    type: string
+                    description: >
+                      Adyen's unique reference for this capture request.
+                    example: 882610755394031H
+                  status:
+                    type: string
+                    description: >
+                      The status of the capture request. Will be 
+                      received if the capture was successfully 
+                      submitted for processing.
+                    example: received
+                  merchantReference:
+                    type: string
+                    description: Your original capture reference.
+                    example: CAPTURE-ORDER-12345
+        "400":
+          description: Bad request. Missing or invalid parameters.
+        "401":
+          description: Unauthorized. Invalid or missing API key.
+        "422":
+          description: Unprocessable entity. Invalid merchant account.
