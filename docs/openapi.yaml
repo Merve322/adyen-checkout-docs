@@ -30,7 +30,7 @@ tags:
 
     paths:
     /sessions:
-    post:
+     post:
       tags:
         - Sessions
       summary: Create a payment session
@@ -99,3 +99,79 @@ tags:
           description: Unauthorized. Invalid or missing API key.
         "422":
           description: Unprocessable entity. Invalid merchant account.
+
+    /paymentMethods:
+     post:
+      tags:
+        - Payment Methods
+      summary: Get available payment methods
+      description: >
+        Returns the payment methods available for a specific shopper
+        in a given country and currency. Use this endpoint to determine
+        which payment options to display before initializing Drop-in.
+      operationId: getPaymentMethods
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - merchantAccount
+                - countryCode
+                - amount
+                - currency
+              properties:
+                merchantAccount:
+                  type: string
+                  description: Your Adyen merchant account name.
+                  example: YourMerchantAccount
+                countryCode:
+                  type: string
+                  description: >
+                    The shopper's country code in ISO 3166-1 alpha-2 
+                    format. This determines which payment methods 
+                    are available.
+                  example: US
+                amount:
+                  type: integer
+                  description: >
+                    Payment amount in minor units. For example,
+                    1000 represents $10.00 in USD.
+                  example: 1000
+                currency:
+                  type: string
+                  description: The three-letter ISO 4217 currency code.
+                  example: USD
+                shopperLocale:
+                  type: string
+                  description: >
+                    The language and country combination used to 
+                    display payment method names. Defaults to en-US.
+                  example: en-US
+      responses:
+        "200":
+          description: Available payment methods retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paymentMethods:
+                    type: array
+                    description: List of available payment methods.
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          description: The payment method type identifier.
+                          example: scheme
+                        name:
+                          type: string
+                          description: The display name of the payment method.
+                          example: Credit Card
+        "400":
+          description: Bad request. Missing or invalid parameters.
+        "401":
+          description: Unauthorized. Invalid or missing API key.
