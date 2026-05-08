@@ -28,15 +28,15 @@ tags:
   - name: Modifications
     description: Capture, cancel, or refund payments
 
-    paths:
-    /sessions:
-     post:
+paths:
+  /sessions:
+    post:
       tags:
         - Sessions
       summary: Create a payment session
       description: >
         Creates a payment session that initializes the Drop-in component.
-        The session contains all the information needed to render the 
+        The session contains all the information needed to render the
         payment form and process the transaction.
       operationId: createSession
       requestBody:
@@ -58,7 +58,7 @@ tags:
                 amount:
                   type: integer
                   description: >
-                    Payment amount in minor units. For example, 
+                    Payment amount in minor units. For example,
                     1000 represents $10.00 in USD.
                   example: 1000
                 currency:
@@ -68,7 +68,7 @@ tags:
                 returnUrl:
                   type: string
                   description: >
-                    The URL to redirect the shopper to after payment 
+                    The URL to redirect the shopper to after payment
                     is completed.
                   example: https://yoursite.com/checkout/complete
       responses:
@@ -86,7 +86,7 @@ tags:
                   sessionData:
                     type: string
                     description: >
-                      Encrypted session data passed to the 
+                      Encrypted session data passed to the
                       Drop-in component.
                     example: Ab02b4c...
                   expiresAt:
@@ -100,8 +100,8 @@ tags:
         "422":
           description: Unprocessable entity. Invalid merchant account.
 
-    /paymentMethods:
-     post:
+  /paymentMethods:
+    post:
       tags:
         - Payment Methods
       summary: Get available payment methods
@@ -129,8 +129,8 @@ tags:
                 countryCode:
                   type: string
                   description: >
-                    The shopper's country code in ISO 3166-1 alpha-2 
-                    format. This determines which payment methods 
+                    The shopper's country code in ISO 3166-1 alpha-2
+                    format. This determines which payment methods
                     are available.
                   example: US
                 amount:
@@ -146,7 +146,7 @@ tags:
                 shopperLocale:
                   type: string
                   description: >
-                    The language and country combination used to 
+                    The language and country combination used to
                     display payment method names. Defaults to en-US.
                   example: en-US
       responses:
@@ -176,8 +176,8 @@ tags:
         "401":
           description: Unauthorized. Invalid or missing API key.
 
-    /payments:
-     post:
+  /payments:
+    post:
       tags:
         - Payments
       summary: Submit a payment
@@ -280,7 +280,7 @@ tags:
                     type: string
                     description: >
                       The result of the payment request. Possible values
-                      are Authorised, Refused, RedirectShopper, 
+                      are Authorised, Refused, RedirectShopper,
                       Pending, and Error.
                     example: Authorised
                   merchantReference:
@@ -293,9 +293,9 @@ tags:
           description: Unauthorized. Invalid or missing API key.
         "422":
           description: Unprocessable entity. Invalid merchant account.
-    
-    /payments/{paymentPspReference}/captures:
-     post:
+
+  /payments/{paymentPspReference}/captures:
+    post:
       tags:
         - Modifications
       summary: Capture a payment
@@ -361,8 +361,8 @@ tags:
                   status:
                     type: string
                     description: >
-                      The status of the capture request. Will be 
-                      received if the capture was successfully 
+                      The status of the capture request. Will be
+                      received if the capture was successfully
                       submitted for processing.
                     example: received
                   merchantReference:
@@ -375,3 +375,23 @@ tags:
           description: Unauthorized. Invalid or missing API key.
         "422":
           description: Unprocessable entity. Invalid merchant account.
+  
+  components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: >
+        Pass your Adyen API key in the X-API-Key request header.
+        Generate your API key in the Adyen Customer Area under
+        Developers > API credentials.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: >
+        Bearer token required alongside X-API-Key for purchase
+        endpoints. Obtain this token through the Adyen authentication flow.
+
+security:
+  - ApiKeyAuth: []
