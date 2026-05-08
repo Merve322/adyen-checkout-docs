@@ -314,7 +314,7 @@ paths:
             This is returned in the response of the /payments endpoint.
           schema:
             type: string
-          example: 882610755394031G
+            example: 882610755394031G
       requestBody:
         required: true
         content:
@@ -375,8 +375,8 @@ paths:
           description: Unauthorized. Invalid or missing API key.
         "422":
           description: Unprocessable entity. Invalid merchant account.
-  
-  components:
+
+components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
