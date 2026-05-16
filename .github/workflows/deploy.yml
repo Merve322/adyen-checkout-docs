@@ -23,8 +23,8 @@ jobs:
       - name: Install Redocly CLI
         run: npm install -g @redocly/cli@latest
 
-      - name: Build portal
-        run: redocly build --output _site
+      - name: Build docs
+        run: redocly build-docs openapi.yaml --output _site/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
