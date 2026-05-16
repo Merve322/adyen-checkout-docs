@@ -1,0 +1,32 @@
+title: Adyen Checkout API
+
+theme:
+  openapi:
+    theme:
+      colors:
+        primary:
+          main: '#0ABF53'
+      typography:
+        fontSize: 15px
+        fontFamily: Inter, sans-serif
+        headings:
+          fontFamily: Inter, sans-serif
+          fontWeight: '600'
+        code:
+          fontSize: 13px
+
+navbar:
+  items:
+    - page: index.md
+      label: Overview
+    - page: getting-started.md
+      label: Getting Started
+    - page: openapi.yaml
+      label: API Reference
+    - page: errors.md
+      label: Errors
+    - page: changelog.md
+      label: Changelog
+
+footer:
+  copyrightText: Adyen Checkout API Documentation · Sample portfolio piece by Merveille Naomi
