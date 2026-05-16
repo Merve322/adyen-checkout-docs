@@ -29,6 +29,9 @@ jobs:
       - name: Copy openapi.yaml to site
         run: cp openapi.yaml _site/openapi.yaml
 
+      - name: Add nojekyll
+        run: touch _site/.nojekyll
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
