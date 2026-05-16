@@ -1,0 +1,36 @@
+name: Deploy Redocly Docs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Redocly CLI
+        run: npm install -g @redocly/cli@latest
+
+      - name: Build docs
+        run: redocly build-docs openapi.yaml --output docs/index.html
+
+      - name: Build portal
+        run: |
+          redocly preview-docs --help || true
+          npx @redocly/cli@latest build-docs openapi.yaml \
+            --output _site/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
