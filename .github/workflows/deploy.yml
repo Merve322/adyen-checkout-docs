@@ -26,6 +26,9 @@ jobs:
       - name: Build docs
         run: redocly build-docs openapi.yaml --output _site/index.html
 
+      - name: Copy openapi.yaml to site
+        run: cp openapi.yaml _site/openapi.yaml
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
