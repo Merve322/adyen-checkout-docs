@@ -1,9 +1,0 @@
-apiDefinitions:
-  main: docs/openapi.yaml
-
-lint:
-  extends:
-    - recommended
-
-referenceDocs:
-  htmlTemplate: ./docs/index.html
