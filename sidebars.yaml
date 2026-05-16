@@ -1,0 +1,14 @@
+- page: index.md
+  label: Overview
+- page: authentication.md
+  label: Authentication
+- page: getting-started.md
+  label: Getting Started
+- group: API Reference
+  items:
+    - page: openapi.yaml
+      label: Checkout API
+- page: errors.md
+  label: Error Codes
+- page: changelog.md
+  label: Changelog
