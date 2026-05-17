@@ -1,0 +1,16 @@
+:root {
+  --color-primary-main: #0ABF53;
+  --color-primary-light: #e6f9ef;
+  --color-primary-dark: #089940;
+  
+  --sidebar-background-color: #fafafa;
+  --sidebar-text-color: #1a1a1a;
+  --sidebar-active-bg-color: #e6f9ef;
+  --sidebar-active-text-color: #0ABF53;
+  
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --heading-font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  --right-panel-background-color: #1a1d23;
+  --code-block-background-color: #141619;
+}
