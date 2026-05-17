@@ -1,0 +1,13 @@
+{
+  "name": "adyen-checkout-docs",
+  "version": "1.0.0",
+  "description": "Adyen Checkout API Documentation",
+  "scripts": {
+    "convert": "node scripts/convert.js",
+    "inject": "node scripts/inject.js"
+  },
+  "dependencies": {
+    "marked": "^9.0.0",
+    "highlight.js": "^11.9.0"
+  }
+}
