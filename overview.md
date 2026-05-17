@@ -35,6 +35,44 @@ The Adyen Checkout API follows a session-based flow:
 5. Adyen processes the transaction and returns a result code
 6. Your server handles the result and updates your order system
 
+## Why Adyen uses a session-based flow
+
+Earlier payment integrations required merchants to collect card
+details directly and pass them to a payment processor in a single
+request. This placed the full burden of PCI DSS compliance on the
+merchant; any server that touches raw card data must meet the
+strictest compliance requirements, which are expensive and
+operationally complex to maintain.
+
+Adyen's session-based flow solves this by separating the
+integration into two distinct concerns.
+
+The first concern is session creation, which happens server-side.
+Your server creates a session using your merchant credentials and
+the transaction details. At this point, no card data exists yet.
+You are simply telling Adyen that a payment is about to happen
+and what its parameters are.
+
+The second concern is card data capture, which happens entirely
+within Adyen's Drop-in component in the browser. The component
+encrypts the card details using Adyen's public key before they
+leave the shopper's device. The encrypted values are what get
+submitted to your server and onward to Adyen, never the raw
+card number.
+
+The result is that raw card data never touches your server at
+any point in the flow. This means your PCI DSS scope is
+significantly reduced. You handle session parameters and
+encrypted blobs, not sensitive card data. Adyen carries the
+compliance burden for the parts of the flow that actually
+involve card numbers.
+
+This is not unique to Adyen, Stripe Elements and Braintree's
+Drop-in UI follow the same architectural principle. It has become
+the industry standard for web payment integrations precisely
+because it shifts compliance responsibility to the processor
+while keeping the developer experience clean.
+
 ## Base URLs
 
 | Environment | URL |
