@@ -169,7 +169,7 @@ If your shopper is completing 3D Secure authentication but not
 landing on your expected confirmation page, verify that your
 returnUrl exactly matches a URL registered in your Adyen Customer
 Area under allowed origins. Adyen validates the returnUrl against
-your registered origins as a security measure — an unregistered
+your registered origins as a security measure, an unregistered
 URL will cause the redirect to fail silently.
 
 ## Next steps
