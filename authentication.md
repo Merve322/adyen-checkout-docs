@@ -56,7 +56,7 @@ you are targeting.
 
 ## Common Authentication Mistakes
 
-**Using the Wrong Key for the Environment**
+**1. Using the Wrong Key for the Environment**
 
 Adyen maintains completely separate API keys for test and live
 environments. A live key will not work against the test base URL
@@ -66,7 +66,7 @@ and that you are using the test key with the test URL and the live
 key with the live URL. Adyen's 401 response does not specify which
 of these is wrong.
 
-**Exposing Your API Key in Frontend Code**
+**2. Exposing Your API Key in Frontend Code**
 
 Your API key must never appear in JavaScript that runs in the
 browser. It will be visible in your page source and can be
@@ -75,7 +75,7 @@ originate from your server. The Drop-in component handles the
 shopper-facing UI in the browser, but the API calls happen
 server-side.
 
-**Forgetting the Bearer Token on Purchase Endpoints**
+**3. Forgetting the Bearer Token on Purchase Endpoints**
 
 The dual authentication requirement, API key plus Bearer token,
 applies specifically to endpoints that initiate or modify payments.
