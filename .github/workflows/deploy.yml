@@ -23,6 +23,9 @@ jobs:
       - name: Install Redocly CLI
         run: npm install -g @redocly/cli@latest
 
+      - name: Create output directory
+        run: mkdir -p _site
+
       - name: Build docs
         run: redocly build-docs openapi.yaml --output _site/index.html
 
@@ -32,8 +35,12 @@ jobs:
       - name: Add nojekyll
         run: touch _site/.nojekyll
 
+      - name: List build output
+        run: ls -la _site/
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./_site
+          force_orphan: true
