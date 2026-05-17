@@ -1,0 +1,397 @@
+openapi: 3.0.3
+
+info:
+  title: Adyen Checkout API
+  version: "72.0"
+  description: >
+    The Adyen Checkout API provides a modern and flexible way to accept
+    payments online. This documentation covers the Drop-in integration
+    for web, including authentication, payment sessions, and error handling.
+  contact:
+    name: Adyen Developer Support
+    url: https://docs.adyen.com
+    email: support@adyen.com
+
+servers:
+  - url: https://checkout-test.adyen.com/v72
+    description: Test environment
+  - url: https://checkout-live.adyen.com/v72
+    description: Live environment
+
+tags:
+  - name: Sessions
+    description: Create and manage payment sessions
+  - name: Payments
+    description: Submit and manage payments
+  - name: Payment Methods
+    description: Retrieve available payment methods
+  - name: Modifications
+    description: Capture, cancel, or refund payments
+
+paths:
+  /sessions:
+    post:
+      tags:
+        - Sessions
+      summary: Create a payment session
+      description: >
+        Creates a payment session that initializes the Drop-in component.
+        The session contains all the information needed to render the
+        payment form and process the transaction.
+      operationId: createSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - merchantAccount
+                - amount
+                - currency
+                - returnUrl
+              properties:
+                merchantAccount:
+                  type: string
+                  description: Your Adyen merchant account name.
+                  example: YourMerchantAccount
+                amount:
+                  type: integer
+                  description: >
+                    Payment amount in minor units. For example,
+                    1000 represents $10.00 in USD.
+                  example: 1000
+                currency:
+                  type: string
+                  description: The three-letter ISO 4217 currency code.
+                  example: USD
+                returnUrl:
+                  type: string
+                  description: >
+                    The URL to redirect the shopper to after payment
+                    is completed.
+                  example: https://yoursite.com/checkout/complete
+      responses:
+        "201":
+          description: Session created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The unique session identifier.
+                    example: CS-Adyen-1234567890
+                  sessionData:
+                    type: string
+                    description: >
+                      Encrypted session data passed to the
+                      Drop-in component.
+                    example: Ab02b4c...
+                  expiresAt:
+                    type: string
+                    description: Session expiry time in ISO 8601 format.
+                    example: "2024-01-15T12:00:00Z"
+        "400":
+          description: Bad request. Missing or invalid parameters.
+        "401":
+          description: Unauthorized. Invalid or missing API key.
+        "422":
+          description: Unprocessable entity. Invalid merchant account.
+
+  /paymentMethods:
+    post:
+      tags:
+        - Payment Methods
+      summary: Get available payment methods
+      description: >
+        Returns the payment methods available for a specific shopper
+        in a given country and currency. Use this endpoint to determine
+        which payment options to display before initializing Drop-in.
+      operationId: getPaymentMethods
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - merchantAccount
+                - countryCode
+                - amount
+                - currency
+              properties:
+                merchantAccount:
+                  type: string
+                  description: Your Adyen merchant account name.
+                  example: YourMerchantAccount
+                countryCode:
+                  type: string
+                  description: >
+                    The shopper's country code in ISO 3166-1 alpha-2
+                    format. This determines which payment methods
+                    are available.
+                  example: US
+                amount:
+                  type: integer
+                  description: >
+                    Payment amount in minor units. For example,
+                    1000 represents $10.00 in USD.
+                  example: 1000
+                currency:
+                  type: string
+                  description: The three-letter ISO 4217 currency code.
+                  example: USD
+                shopperLocale:
+                  type: string
+                  description: >
+                    The language and country combination used to
+                    display payment method names. Defaults to en-US.
+                  example: en-US
+      responses:
+        "200":
+          description: Available payment methods retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paymentMethods:
+                    type: array
+                    description: List of available payment methods.
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          description: The payment method type identifier.
+                          example: scheme
+                        name:
+                          type: string
+                          description: The display name of the payment method.
+                          example: Credit Card
+        "400":
+          description: Bad request. Missing or invalid parameters.
+        "401":
+          description: Unauthorized. Invalid or missing API key.
+
+  /payments:
+    post:
+      tags:
+        - Payments
+      summary: Submit a payment
+      description: >
+        Submits a payment request after the shopper has provided their
+        payment details through the Drop-in component. This endpoint
+        processes the transaction and returns an immediate result or
+        redirects the shopper for additional authentication such as 3D Secure.
+      operationId: makePayment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - merchantAccount
+                - amount
+                - currency
+                - reference
+                - returnUrl
+                - paymentMethod
+              properties:
+                merchantAccount:
+                  type: string
+                  description: Your Adyen merchant account name.
+                  example: YourMerchantAccount
+                amount:
+                  type: integer
+                  description: >
+                    Payment amount in minor units. For example,
+                    1000 represents $10.00 in USD.
+                  example: 1000
+                currency:
+                  type: string
+                  description: The three-letter ISO 4217 currency code.
+                  example: USD
+                reference:
+                  type: string
+                  description: >
+                    Your unique reference for this payment. Use this
+                    to match the payment to your internal order system.
+                  example: ORDER-12345
+                returnUrl:
+                  type: string
+                  description: >
+                    The URL to redirect the shopper to after payment
+                    is completed or after 3D Secure authentication.
+                  example: https://yoursite.com/checkout/complete
+                paymentMethod:
+                  type: object
+                  description: >
+                    The payment method details collected from the
+                    shopper through the Drop-in component.
+                  properties:
+                    type:
+                      type: string
+                      description: The payment method type.
+                      example: scheme
+                    encryptedCardNumber:
+                      type: string
+                      description: The encrypted card number.
+                      example: adyenjs_0_1_25$...
+                    encryptedExpiryMonth:
+                      type: string
+                      description: The encrypted card expiry month.
+                      example: adyenjs_0_1_25$...
+                    encryptedExpiryYear:
+                      type: string
+                      description: The encrypted card expiry year.
+                      example: adyenjs_0_1_25$...
+                    encryptedSecurityCode:
+                      type: string
+                      description: The encrypted card security code (CVV).
+                      example: adyenjs_0_1_25$...
+                shopperEmail:
+                  type: string
+                  description: The shopper's email address.
+                  example: shopper@example.com
+                shopperIP:
+                  type: string
+                  description: >
+                    The shopper's IP address. Used for fraud detection.
+                  example: 192.168.1.1
+      responses:
+        "200":
+          description: Payment processed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pspReference:
+                    type: string
+                    description: >
+                      Adyen's unique reference for this payment.
+                      Store this for refunds and disputes.
+                    example: 882610755394031G
+                  resultCode:
+                    type: string
+                    description: >
+                      The result of the payment request. Possible values
+                      are Authorised, Refused, RedirectShopper,
+                      Pending, and Error.
+                    example: Authorised
+                  merchantReference:
+                    type: string
+                    description: Your original order reference.
+                    example: ORDER-12345
+        "400":
+          description: Bad request. Missing or invalid parameters.
+        "401":
+          description: Unauthorized. Invalid or missing API key.
+        "422":
+          description: Unprocessable entity. Invalid merchant account.
+
+  /payments/{paymentPspReference}/captures:
+    post:
+      tags:
+        - Modifications
+      summary: Capture a payment
+      description: >
+        Captures an authorised payment. Use this endpoint when you have
+        separated the authorisation and capture steps in your payment
+        flow. This is common in retail and hospitality businesses where
+        the final amount may differ from the authorised amount.
+      operationId: capturePayment
+      parameters:
+        - name: paymentPspReference
+          in: path
+          required: true
+          description: >
+            The PSP reference of the payment you want to capture.
+            This is returned in the response of the /payments endpoint.
+          schema:
+            type: string
+            example: 882610755394031G
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - merchantAccount
+                - amount
+                - currency
+              properties:
+                merchantAccount:
+                  type: string
+                  description: Your Adyen merchant account name.
+                  example: YourMerchantAccount
+                amount:
+                  type: integer
+                  description: >
+                    The amount to capture in minor units. This can be
+                    less than or equal to the authorised amount.
+                  example: 1000
+                currency:
+                  type: string
+                  description: The three-letter ISO 4217 currency code.
+                  example: USD
+                reference:
+                  type: string
+                  description: >
+                    Your unique reference for this capture request.
+                  example: CAPTURE-ORDER-12345
+      responses:
+        "200":
+          description: Payment captured successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pspReference:
+                    type: string
+                    description: >
+                      Adyen's unique reference for this capture request.
+                    example: 882610755394031H
+                  status:
+                    type: string
+                    description: >
+                      The status of the capture request. Will be
+                      received if the capture was successfully
+                      submitted for processing.
+                    example: received
+                  merchantReference:
+                    type: string
+                    description: Your original capture reference.
+                    example: CAPTURE-ORDER-12345
+        "400":
+          description: Bad request. Missing or invalid parameters.
+        "401":
+          description: Unauthorized. Invalid or missing API key.
+        "422":
+          description: Unprocessable entity. Invalid merchant account.
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: >
+        Pass your Adyen API key in the X-API-Key request header.
+        Generate your API key in the Adyen Customer Area under
+        Developers > API credentials.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: >
+        Bearer token required alongside X-API-Key for purchase
+        endpoints. Obtain this token through the Adyen authentication flow.
+
+security:
+  - ApiKeyAuth: []
