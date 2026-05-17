@@ -1,8 +1,3 @@
----
-title: Adyen Checkout API Documentation
-description: Complete API reference and integration guide for the Adyen Checkout API Drop-in integration.
----
-
 # Adyen Checkout API
 
 Complete documentation for integrating Adyen's Drop-in payment component into your web application.
