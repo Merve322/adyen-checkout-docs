@@ -4,15 +4,15 @@ Complete documentation for integrating Adyen's Drop-in payment component into yo
 
 ## What's in this documentation
 
-- [Overview](overview.md): What the API does and how the payment flow works
-- [Authentication](authentication.md): API keys, Bearer tokens, and security best practices
-- [Getting Started](getting-started.md): Your first payment in four steps
-- [API Reference](openapi.yaml): Full endpoint reference with request and response schemas
-- [Error Codes](errors.md): HTTP status codes and payment result codes explained
-- [Changelog](changelog.md): Version history and recent updates
+- [Overview](overview.html) — What the API does and how the payment flow works
+- [Authentication](authentication.html) — API keys, Bearer tokens, and security best practices
+- [Getting Started](getting-started.html) — Your first payment in four steps
+- [API Reference](api-reference.html) — Full endpoint reference with request and response schemas
+- [Error Codes](errors.html) — HTTP status codes and payment result codes explained
+- [Changelog](changelog.html) — Version history and recent updates
 
 ## Quick start
 
-Create a payment session, initialize Drop-in, and process your first payment in under 30 minutes.
+Create a payment session, initialise Drop-in, and process your first payment in under 30 minutes.
 
-[Get started →](getting-started.md)
+[Get started →](getting-started.html)
